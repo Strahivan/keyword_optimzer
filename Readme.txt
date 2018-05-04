@@ -12,3 +12,19 @@ cd into ENV\Scripts and run activate.exe
 
 How to save changes in your virtualenv?
 pip freeze > requirements.txt
+
+Use:
+- Copy content out of .doc-download into a .txt-file
+- .doc-file dosn't work properly
+
+
+Bugs:
+- look at textract.process (filename, encoding) what's the return of this method? Maybe this causes errors?
+- mainloop() has to stop
+- encoding bug for german umlauts
+- create export button with export functionality (PDF-export)
+- Stopwords have to be checked
+- Language (German/English)
+- Issue with whitespaces in keywords - add smth. like '\n' ?
+- If i click on red "X" the program should stop running (Close)
+- Close the file you opened after analyzing
