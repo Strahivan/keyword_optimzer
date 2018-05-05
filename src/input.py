@@ -1,10 +1,18 @@
 __author__ = 'Strahinja'
+# encoding=utf8
 
 # read in the .doc export from google drive and convert it to a txt-file
 
 from Tkinter import *
 import textract
+import nltk
+from nltk.tokenize import sent_tokenize, word_tokenize
 from tkFileDialog import askopenfilename
+
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 Tk().withdraw()
 filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
@@ -22,18 +30,27 @@ w.pack()
 def callback():
     searchterms = e.get() # entered terms raw
     search = [word.strip() for word in searchterms.lower().split(",")]
-    count = dict.fromkeys(search, 0)
+    countterm = dict.fromkeys(search, 0)
 
-    with open(filename, 'r') as f:
-        for line in f:
-            for word in line.lower().split("."):
-                if word in count:
-                # found a word you wanted to count, so count it
-                    count[word] += 1
-    print (count)
 
-                # found a word you wanted to count, so count it
 
+    file_content = open(filename).read()
+    #decodedfile = file_content.decode("utf-8")
+    token = sent_tokenize(file_content)
+    for sentences in token:
+        for terms in countterm:
+            if terms in sentences:
+                countterm[terms]+=1
+
+    print(countterm)
+
+    #if countterm[i] in token:
+     #       countterm[words] += 1
+     #       i += 1
+     #   else:
+     #       print "hello"
+     #       i += 1
+    #print(countterm)
 
 def export_results():
     with open('results.txt', 'w') as new_results:
