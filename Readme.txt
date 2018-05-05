@@ -4,7 +4,7 @@ cmd: dir - shows list of folders and files in actual path
 cmd: cls - clears screen
 
 Hard Requirements so far:
-- Python 2.7
+- Python 2.7.15
 - virtualenv
 
 How to activate your virtualenv?
@@ -17,6 +17,7 @@ Use:
 - Copy content out of .doc-download into a .txt-file
 - .doc-file dosn't work properly
 
+---- you have to run virtualenv first
 
 Bugs:
 - look at textract.process (filename, encoding) what's the return of this method? Maybe this causes errors?

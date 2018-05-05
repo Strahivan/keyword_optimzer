@@ -26,12 +26,24 @@ def callback():
 
     with open(filename, 'r') as f:
         for line in f:
-            for word in line.lower().split():
+            for word in line.lower().split("."):
                 if word in count:
                 # found a word you wanted to count, so count it
                     count[word] += 1
     print (count)
 
+                # found a word you wanted to count, so count it
+
+
+def export_results():
+    with open('results.txt', 'w') as new_results:
+        new_results.write('This is a new Export!')
+
 b = Button(master, text = "Analyze", width = 10, command = callback)
+exp = Button(master, text = "Export-PDF", width = 10, command = export_results)
+
 b.pack()
+exp.pack()
 mainloop()
+
+
