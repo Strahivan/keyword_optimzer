@@ -1,3 +1,5 @@
+This version works for english and txt-files only.
+
 Windows use: C:\Python27\python.exe <Name_of_py> and C:\Python27\Scripts\pip.exe <pip_command>
 
 cmd: dir - shows list of folders and files in actual path
@@ -26,6 +28,5 @@ Bugs:
 - create export button with export functionality (PDF-export)
 - Stopwords have to be checked
 - Language (German/English)
-- Issue with whitespaces in keywords - add smth. like '\n' ?
 - If i click on red "X" the program should stop running (Close)
 - Close the file you opened after analyzing
