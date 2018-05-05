@@ -1,24 +1,16 @@
 __author__ = 'Strahinja'
-# encoding=utf8
-
-# read in the .doc export from google drive and convert it to a txt-file
 
 from Tkinter import *
+from fpdf import FPDF
 import textract
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 from tkFileDialog import askopenfilename
 
-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-
+# show an "Open" dialog box and return the path to the selected file
 Tk().withdraw()
-filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+filename = askopenfilename()
 
-# progress the given file
-#text = textract.process(filename, encoding='utf-8')
 
 # open window for input
 master = Tk()
@@ -33,7 +25,6 @@ def callback():
     countterm = dict.fromkeys(search, 0)
 
 
-
     file_content = open(filename).read()
     #decodedfile = file_content.decode("utf-8")
     token = sent_tokenize(file_content)
@@ -44,17 +35,12 @@ def callback():
 
     print(countterm)
 
-    #if countterm[i] in token:
-     #       countterm[words] += 1
-     #       i += 1
-     #   else:
-     #       print "hello"
-     #       i += 1
-    #print(countterm)
-
 def export_results():
-    with open('results.txt', 'w') as new_results:
-        new_results.write('This is a new Export!')
+    pdfexp = FPDF()
+    pdfexp.add_page()
+    pdfexp.set_font("Arial", size=12)
+    pdfexp.cell(200, 10, txt="Welcome to Python!", align="C")
+    pdfexp.output("results_keyword_analysis.pdf")
 
 b = Button(master, text = "Analyze", width = 10, command = callback)
 exp = Button(master, text = "Export-PDF", width = 10, command = export_results)

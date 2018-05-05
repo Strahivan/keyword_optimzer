@@ -3,6 +3,7 @@ beautifulsoup4==4.5.3
 chardet==2.3.0
 docx2txt==0.6
 EbookLib==0.15
+fpdf==1.7
 lxml==4.2.1
 nltk==3.2.5
 numpy==1.14.3
