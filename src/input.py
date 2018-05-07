@@ -4,6 +4,7 @@ from Tkinter import *
 from fpdf import FPDF
 import textract
 import nltk
+import re
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize
 from tkFileDialog import askopenfilename
@@ -19,26 +20,48 @@ filename = askopenfilename()
 
 # open window for input
 master = Tk()
-e = Entry(master)
+e = Entry(master, width=80)
+master.title("Keyword Optimizer")
+master.geometry("500x500")
 e.pack()
 w = Label(master, text = "Enter the words you want to search for (separate with commas): ")
 w.pack()
 
 def callback():
-    searchterms = e.get() # entered terms raw
+
+    # handle search terms
+    searchterms = e.get()
+
+    # divide them according to ','
     search = [word.strip() for word in searchterms.lower().split(",")]
     countterm = dict.fromkeys(search, 0)
 
+    # read file
+    file_content = open(filename).read().lower()
 
-    file_content = open(filename).read()
-    #decodedfile = file_content.decode("utf-8")
+    # tokenize file (sentences)
     token = sent_tokenize(file_content)
-    number_of_words = len(token)
-    for sentences in token:
+
+    cleanedtoken = []
+
+    # remove special chars
+    for single_word in token:
+        single_token = re.split('[,.!?:\n]', single_word)
+        single_token = " ".join(single_token)
+        cleanedtoken.append(single_token)
+
+    # check cleaned tokens for search terms
+    for sentences in cleanedtoken:
         for terms in countterm:
             if terms in sentences:
-                countterm[terms]+=1
-    print(countterm)
+                numberofkeywords = sentences.count(terms)
+                countterm[terms] = countterm[terms]+ numberofkeywords
+
+    # output of results
+    print("\n")
+    print("Keyword Analysis: \n")
+    for term in countterm:
+        print(str(term) + " " + str(countterm[term]) + "\n")
 
 def export_results(Name_of_File):
     pdfexp = FPDF()
@@ -72,9 +95,9 @@ def export_results(Name_of_File):
 
 
     # positions need to be fixed
-    pdfexp.cell(10, 0, txt="Total Amount of words: "+ str(number_of_total_words), align="C")
-    pdfexp.cell(20, 0, txt="Total Amount of Stopwords: "+ str(number_of_stopwords), align="C")
-    pdfexp.cell(30, 0, txt="Clean_Content: "+ str(len(cleanedwords)), align="C")
+    pdfexp.cell(50, 20, txt="Total Amount of words: "+ str(number_of_total_words), ln = 1, align="C")
+    pdfexp.cell(50, 20, txt="Total Amount of Stopwords: "+ str(number_of_stopwords),ln = 1, align="C")
+    pdfexp.cell(50, 20, txt="Clean_Content: "+ str(len(cleanedwords)), ln = 1, align="C")
 
 
     pdfexp.output("results_keyword_analysis.pdf")

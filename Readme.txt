@@ -19,6 +19,11 @@ Use:
 - Copy content out of .doc-download into a .txt-file
 - .doc-file dosn't work properly
 
+
+End Programm: STRG-C
+Launch Programm: CD into Src and then python input.py
+
+
 ---- you have to run virtualenv first
 
 Bugs:
