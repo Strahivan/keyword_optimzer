@@ -16,10 +16,16 @@ APPOSTROPHES = {"'s":"is", "'re":"are", "'m":"am", "'t":"not", "'ll":"will", "il
 # show an "Open" dialog box and return the path to the selected file
 Tk().withdraw()
 filename = askopenfilename()
-
+stopwordparam = "english"
 
 # open window for input
 master = Tk()
+mainframe = Frame(master)
+mainframe.grid(column=0,row=0, sticky=(N,W,E,S) )
+mainframe.columnconfigure(0, weight = 1)
+mainframe.rowconfigure(0, weight = 1)
+mainframe.pack(pady = 100, padx = 100)
+
 e = Entry(master, width=80)
 master.title("Keyword Optimizer")
 master.geometry("500x500")
@@ -27,10 +33,27 @@ e.pack()
 w = Label(master, text = "Enter the words you want to search for (separate with commas): ")
 w.pack()
 
+# Create a Tkinter variable
+tkvar = StringVar(master)
+
+# Dictionary with options
+choices = { 'english','german'}
+tkvar.set('english') # set the default option
+
+popupMenu = OptionMenu(mainframe, tkvar, *choices)
+Label(mainframe, text="Choose a language").grid(row = 1, column = 1)
+popupMenu.grid(row = 2, column =1)
+
+# on change dropdown value
+def change_dropdown(*args):
+    stopwordparam = tkvar.get()
+
+
 def callback():
 
     # handle search terms
     searchterms = e.get()
+    stopwordparam = tkvar.get()
 
     # divide them according to ','
     search = [word.strip() for word in searchterms.lower().split(",")]
@@ -43,6 +66,7 @@ def callback():
     token = sent_tokenize(file_content)
 
     cleanedtoken = []
+    fill = dict.fromkeys(stopwords.words(stopwordparam), 0)
 
     # remove special chars
     for single_word in token:
@@ -57,11 +81,28 @@ def callback():
                 numberofkeywords = sentences.count(terms)
                 countterm[terms] = countterm[terms]+ numberofkeywords
 
+
+    # check each stopword single
+
+    for eachsentence in cleanedtoken:
+        for eachword in fill:
+            if eachword in eachsentence:
+                numberofstopwords = eachsentence.count(eachword)
+                fill[eachword] = fill[eachword]+ numberofstopwords
+
+
     # output of results
+
     print("\n")
     print("Keyword Analysis: \n")
     for term in countterm:
         print(str(term) + " " + str(countterm[term]) + "\n")
+
+    print("\n")
+    print("Stopword Analysis: \n")
+    for stopword in fill:
+        print(str(stopword.encode('utf-8')) + " " + str(fill[stopword]) + "\n")
+
 
 def export_results(Name_of_File):
     pdfexp = FPDF()
@@ -83,7 +124,7 @@ def export_results(Name_of_File):
 
     number_of_total_words = len(filtered)
 
-    cleanedwords = ' '.join([word for word in filtered if word not in stopwords.words("english")])
+    cleanedwords = ' '.join([word for word in filtered if word not in stopwords.words(stopwordparam)])
     cleanedwords = word_tokenize(cleanedwords)
 
 
@@ -92,7 +133,7 @@ def export_results(Name_of_File):
     print("Total Words " + str(number_of_total_words))
     print("Stopwords " + str(number_of_stopwords))
     print("Clean_Content: " + str(len(cleanedwords)))
-
+    print(stopwordparam)
 
     # positions need to be fixed
     pdfexp.cell(50, 20, txt="Total Amount of words: "+ str(number_of_total_words), ln = 1, align="C")
