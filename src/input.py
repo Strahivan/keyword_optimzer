@@ -2,7 +2,6 @@ __author__ = 'Strahinja'
 
 from Tkinter import *
 from fpdf import FPDF
-import textract
 import nltk
 import re
 from nltk.corpus import stopwords
@@ -61,12 +60,15 @@ def callback():
 
     # read file
     file_content = open(filename).read().lower()
+   # file_content = file_content.encode('utf-8')
 
     # tokenize file (sentences)
     token = sent_tokenize(file_content)
 
     cleanedtoken = []
     fill = dict.fromkeys(stopwords.words(stopwordparam), 0)
+    for fillword in fill:
+        fillword = fillword.encode('utf-8')
 
     # remove special chars
     for single_word in token:
@@ -104,18 +106,20 @@ def callback():
         print(str(stopword.encode('utf-8')) + " " + str(fill[stopword]) + "\n")
 
 
-def export_results(Name_of_File):
+def export_results():
     pdfexp = FPDF()
     pdfexp.add_page()
     pdfexp.set_font("Arial", size=12)
-    pdfexp.cell(0, 10, txt="Keyword Analysis of file: " + Name_of_File, align="C")
+    pdfexp.cell(0, 10, txt="Keyword Analysis of file: " + filename, align="C")
 
     # open file again and standardize it
-    file_content = open(Name_of_File).read()
+    file_content = open(filename).read()
     file_content = file_content.lower()
+    file_content = file_content.decode("unicode_escape").encode('utf-8')
+    stopwordparam = tkvar.get()
 
     #remove special chars
-    oken = word_tokenize(file_content)
+    oken = word_tokenize(file_content.format())
 
     nonPunct = re.compile('.*[A-Za-z0-9].*')  # must contain a letter or digit
     filtered = [w for w in oken if nonPunct.match(w)]
@@ -144,7 +148,7 @@ def export_results(Name_of_File):
     pdfexp.output("results_keyword_analysis.pdf")
 
 b = Button(master, text = "Analyze", width = 10, command = callback)
-exp = Button(master, text = "Export-PDF", width = 10, command = export_results(filename))
+exp = Button(master, text = "Export-PDF", width = 10, command = export_results)
 
 b.pack()
 exp.pack()
